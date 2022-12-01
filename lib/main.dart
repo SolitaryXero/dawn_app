@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dawn_app/screens/screen_home_page/screen_home_page.dart';
 import 'package:dawn_app/service_locator.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'globals/globals_stuff.dart';
 
 void main() {
   setupServiceLocators();
+  CachedNetworkImage.logLevel = CacheManagerLogLevel.debug;
   runApp(const MyApp());
 }
 

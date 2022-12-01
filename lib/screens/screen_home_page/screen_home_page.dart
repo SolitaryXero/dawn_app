@@ -1,12 +1,13 @@
 
-import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dawn_app/Services/api_manager.dart';
 import 'package:dawn_app/globals/globals_stuff.dart';
 import 'package:dawn_app/models/model_story.dart';
 import 'package:dawn_app/screens/screen_Search_page/screen_Search_page.dart';
 import 'package:dawn_app/screens/screen_saved_page/screen_saved_page.dart';
 import 'package:dawn_app/screens/screen_settings_page/screen_settings_page.dart';
+import 'package:dawn_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -20,8 +21,7 @@ class ScreenHomePage extends StatefulWidget {
 class _ScreenHomePageState extends State<ScreenHomePage> {
 
   List<ModelStory> stories = [];
-
-
+  int categoryIndex = 0;
       
   @override
   Widget build(BuildContext context) {
@@ -55,17 +55,117 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
                 ),
 
                 //Categories
-                ListTile(title: Text("Home", style: defaultTextTheme,),onTap: (){} ,),
-                ListTile(title: Text("Latest-news", style: defaultTextTheme,), onTap: (){},),
-                ListTile(title: Text("Business", style: defaultTextTheme,),onTap: () {},),
-                ListTile(title: Text("Opinion", style: defaultTextTheme,),onTap: () {},),
-                ListTile(title: Text("Sports", style: defaultTextTheme,),onTap: () {},),
-                ListTile(title: Text("World", style: defaultTextTheme,),onTap: () {},),
-                ListTile(title: Text("Pakistan", style: defaultTextTheme,),onTap: () {},),
-                ListTile(title: Text("Magazine", style: defaultTextTheme,),onTap: () {},),
-                ListTile(title: Text("Blogs", style: defaultTextTheme,),onTap: () {},),
-                ListTile(title: Text("Live-blog", style: defaultTextTheme,),onTap: () {},),
-                ListTile(title: Text("Entertainment", style: defaultTextTheme,),onTap: () {},),
+
+                //Home 
+                ListTile(title: Text("Home", style: defaultTextTheme,),
+                  onTap: ()async{
+                    stories = await GetIt.I<IApiManager>().getNews("home");
+                    if(mounted){setState(() {
+                      Navigator.pop(context);
+                      categoryIndex = 0;
+                    });}
+                    
+                  },
+                ),
+
+                //Latest News
+                ListTile(title: Text("Latest", style: defaultTextTheme,), 
+                  onTap: ()async{
+                    stories = await GetIt.I<IApiManager>().getNews("latest-news");
+                    if(mounted){setState(() {
+                      Navigator.pop(context);
+                      categoryIndex = 1;
+                    });}
+                  },
+                ),
+
+                //Pakistan
+                ListTile(title: Text("Pakistan", style: defaultTextTheme,),
+                  onTap: ()async{
+                    stories = await GetIt.I<IApiManager>().getNews("Pakistan");
+                    if(mounted){setState(() {
+                      Navigator.pop(context);
+                      categoryIndex = 2;
+                    });}
+                  },
+                ),
+
+                //Opinion
+                ListTile(title: Text("Opinion", style: defaultTextTheme,),
+                  onTap: ()async{
+                    stories = await GetIt.I<IApiManager>().getNews("Opinion");
+                    if(mounted){setState(() {
+                      Navigator.pop(context);
+                      categoryIndex = 3;
+                    });}
+                  },
+                ),
+
+                //Business
+                ListTile(title: Text("Business", style: defaultTextTheme,),
+                  onTap: ()async{
+                    stories = await GetIt.I<IApiManager>().getNews("Business");
+                    if(mounted){setState(() {
+                      Navigator.pop(context);
+                      categoryIndex = 4;
+                    });}
+                  },
+                ),
+
+                //World
+                ListTile(title: Text("World", style: defaultTextTheme,),
+                  onTap: ()async{
+                    stories = await GetIt.I<IApiManager>().getNews("World");
+                    if(mounted){setState(() {
+                      Navigator.pop(context);
+                      categoryIndex = 5;
+                    });}
+                  },
+                ),
+
+                //Sports
+                ListTile(title: Text("Sports", style: defaultTextTheme,),
+                  onTap: ()async{
+                    stories = await GetIt.I<IApiManager>().getNews("Sport");
+                    if(mounted){setState(() {
+                      Navigator.pop(context);
+                      categoryIndex = 6;
+                    });}
+                  },
+                ),
+
+                //Magazine
+                ListTile(title: Text("Magazine", style: defaultTextTheme,),
+                  onTap: ()async{
+                    stories = await GetIt.I<IApiManager>().getNews("Magazine");
+                    if(mounted){setState(() {
+                      Navigator.pop(context);
+                      categoryIndex = 7;
+                    });}
+                  },
+                ),
+
+                //Blogs
+                ListTile(title: Text("Blogs", style: defaultTextTheme,),
+                  onTap: ()async{
+                    stories = await GetIt.I<IApiManager>().getNews("Blogs");
+                    if(mounted){setState(() {
+                      Navigator.pop(context);
+                      categoryIndex = 8;
+                    });}
+                  },
+                ),
+
+                //Live-blog
+                ListTile(title: Text("Live-blog", style: defaultTextTheme,),
+                  onTap: ()async{
+                    stories = await GetIt.I<IApiManager>().getNews("Live-blog");
+                    if(mounted){setState(() {
+                      Navigator.pop(context);
+                      categoryIndex = 9;
+                    });}
+                  },
+                ),
               ]
             ),
           ),
@@ -86,7 +186,6 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
           //Downloands
           IconButton(
             onPressed: () async {
-              stories = await GetIt.I<IApiManager>().getNews("home");
               
             }, 
             icon: const Icon(Icons.download)),
@@ -108,46 +207,70 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
         ],
       ),
 
-      body: SizedBox(
-        height: 350,
-        width: 300,
-        child: ListView.separated(
-          padding: const EdgeInsets.all(10),
-          physics: const BouncingScrollPhysics(),
-          itemCount: stories.length,
-          itemBuilder: ((context, index) => Stack(children: [
-            Container(
-            height: kCardHeight,
-            width: MediaQuery.of(context).size.width ,
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.circular(10),
-              image: DecorationImage(image: NetworkImage(stories[index].imageURL), fit: BoxFit.cover)
-            )),
-            Container(
-              height: kCardHeight,
-              width: MediaQuery.of(context).size.width ,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
-                gradient: LinearGradient(colors: [Colors.grey.withOpacity(0.0), Colors.black], begin: Alignment.topCenter, end: Alignment.bottomCenter),
-              ),
-            ),
-            Positioned(
-              top: kCardHeight - 80,
-              left: MediaQuery.of(context).size.width * 0.07,
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width *0.9,
-                child: Text(
-                  stories[index].title,
-                  style: const TextStyle(color: Colors.white, fontSize: 17, fontFamily: "Raleway"),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(child: Text(categoriesDawn[categoryIndex]),),
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height - 124,
+            child: ListView.separated(
+              padding: const EdgeInsets.all(10),
+              physics: const BouncingScrollPhysics(),
+              itemCount: stories.length,
+              itemBuilder: ((context, index) => Stack(children: [
+                
+                Container(
+                  height: kCardHeight,
+                  width: MediaQuery.of(context).size.width ,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: CachedNetworkImage(
+                    imageUrl: stories[index].imageURL,
+                    placeholder: (BuildContext context, String url) => Container(
+                      color: Colors.purple,
+                    ),
+                    errorWidget: (context, url, error) => Image.asset('assets/dawn.jpg'),
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
+                
+                Container(
+                  height: kCardHeight,
+                  width: MediaQuery.of(context).size.width ,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    gradient: const LinearGradient(colors: [Colors.transparent, Colors.black], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+                  ),
+                ),
+                
+                Positioned(
+                  top: kCardHeight - 80,
+                  left: MediaQuery.of(context).size.width * 0.07,
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width *0.9,
+                    child: Text(
+                      stories[index].title,
+                      style: const TextStyle(color: Colors.white, fontSize: 17, fontFamily: "Raleway"),
+                    ),
+                  ),
+                ),
+
+                Positioned(
+                  bottom: 10,
+                  right: 10,
+                  child: Text(stories[index].date,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+                
+              ])),
+              separatorBuilder: (context, index) => const SizedBox(height: 10,),
             ),
-            
-          ])),
-          separatorBuilder: (context, index) => const SizedBox(height: 10,),
-        ),
+          ),
+        ],
       ),
     );
   }
