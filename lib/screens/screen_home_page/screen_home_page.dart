@@ -1,12 +1,16 @@
 
 
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dawn_app/Services/api_manager.dart';
 import 'package:dawn_app/globals/globals_stuff.dart';
 import 'package:dawn_app/models/model_story.dart';
 import 'package:dawn_app/screens/screen_Search_page/screen_Search_page.dart';
+import 'package:dawn_app/screens/screen_description_page/screen_description_page.dart';
 import 'package:dawn_app/screens/screen_saved_page/screen_saved_page.dart';
 import 'package:dawn_app/screens/screen_settings_page/screen_settings_page.dart';
+import 'package:dawn_app/screens/test_screen.dart';
 import 'package:dawn_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -22,9 +26,35 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
 
   List<ModelStory> stories = [];
   int categoryIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    initialScreen().then((value) {
+       setState(() {
       
+      });
+    });
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) { 
+    //   Navigator.of(context).push(MaterialPageRoute(builder: ((context) => const TestScreen())));
+    // });
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      
+    //   initialScreen();
+
+    // });
+    
+  }
+
+
+  
+  Future<void> initialScreen () async {
+    stories = await GetIt.I<IApiManager>().getNews("home");
+  }
+
   @override
   Widget build(BuildContext context) {
+   
     return Scaffold(
       drawer: Padding(
         padding: const EdgeInsets.only(top: 80, bottom: 50),
@@ -64,7 +94,6 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
                       Navigator.pop(context);
                       categoryIndex = 0;
                     });}
-                    
                   },
                 ),
 
@@ -176,6 +205,7 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
         backgroundColor: const Color(0xff040826),
         title: const Text("Dawn"),
         actions: [
+          
           //Saved Pages
           IconButton(
             onPressed: (){
@@ -210,63 +240,76 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          const SizedBox(height: 10,),
           SizedBox(child: Text(categoriesDawn[categoryIndex]),),
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height - 124,
+            height: MediaQuery.of(context).size.height - 134,
             child: ListView.separated(
               padding: const EdgeInsets.all(10),
               physics: const BouncingScrollPhysics(),
               itemCount: stories.length,
-              itemBuilder: ((context, index) => Stack(children: [
-                
-                Container(
-                  height: kCardHeight,
-                  width: MediaQuery.of(context).size.width ,
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: CachedNetworkImage(
+              itemBuilder: ((context, index) => GestureDetector(
+                onTap: () => Navigator.push(
+                  context, 
+                  MaterialPageRoute(
+                    builder: (context) => ScreenDescriptionPage(index: index, stories: stories,),
+                    settings: RouteSettings(
+                      arguments: stories[index].imageURL
+                    )
+                )),
+                child: Stack(children: [
+                  CachedNetworkImage(
+                    width: MediaQuery.of(context).size.width ,
+                    height: kCardHeight,
                     imageUrl: stories[index].imageURL,
-                    placeholder: (BuildContext context, String url) => Container(
-                      color: Colors.purple,
-                    ),
                     errorWidget: (context, url, error) => Image.asset('assets/dawn.jpg'),
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                      ),
+                    ),     
                     fit: BoxFit.cover,
                   ),
-                ),
-                
-                Container(
-                  height: kCardHeight,
-                  width: MediaQuery.of(context).size.width ,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    gradient: const LinearGradient(colors: [Colors.transparent, Colors.black], begin: Alignment.topCenter, end: Alignment.bottomCenter),
-                  ),
-                ),
-                
-                Positioned(
-                  top: kCardHeight - 80,
-                  left: MediaQuery.of(context).size.width * 0.07,
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width *0.9,
-                    child: Text(
-                      stories[index].title,
-                      style: const TextStyle(color: Colors.white, fontSize: 17, fontFamily: "Raleway"),
+                  
+                  
+                  Container(
+                    height: kCardHeight,
+                    width: MediaQuery.of(context).size.width ,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      gradient: const LinearGradient(
+                        colors: [Colors.transparent, Colors.black], 
+                        begin: Alignment.topCenter, 
+                        end: Alignment.bottomCenter
+                      ),
                     ),
                   ),
-                ),
-
-                Positioned(
-                  bottom: 10,
-                  right: 10,
-                  child: Text(stories[index].date,
-                    style: const TextStyle(color: Colors.white),
+                  
+                  Positioned(
+                    top: kCardHeight - 80,
+                    left: MediaQuery.of(context).size.width * 0.07,
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width *0.9,
+                      child: Text(
+                        stories[index].title,
+                        style: const TextStyle(color: Colors.white, fontSize: 17, fontFamily: "Raleway"),
+                      ),
+                    ),
                   ),
-                ),
-                
-              ])),
+              
+                  Positioned(
+                    bottom: 10,
+                    right: 10,
+                    child: Text(
+                      stories[index].date,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  
+                ]),
+              )),
               separatorBuilder: (context, index) => const SizedBox(height: 10,),
             ),
           ),
@@ -274,4 +317,6 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
       ),
     );
   }
+
+
 }

@@ -1,3 +1,4 @@
+
 //https://www.dawn.com/feeds/
 import 'package:dawn_app/models/model_story.dart';
 import 'package:dio/dio.dart';
@@ -24,7 +25,7 @@ class ApiManager implements IApiManager{
       for(int i = 1 ; i < numberOfStories ;i++){
       
         final title = document.findAllElements('title').elementAt(i).text;
-        final content = document.findAllElements('description').elementAt(i).text;
+        var content = document.findAllElements('description').elementAt(i).text;
         var date = document.findAllElements('pubDate').elementAt(i).text;
         var imgURL = document.findAllElements('item').elementAt(i-1).findAllElements('media:thumbnail').toString();
         final articleLink = document.findAllElements('link').elementAt(i).text;
@@ -32,15 +33,24 @@ class ApiManager implements IApiManager{
         imgURL = imgURL.toString().split('?').first;
         imgURL = imgURL.split('="').last;
         imgURL = imgURL.split('"/').first;
-        // imgURL = imgURL.toString().replaceFirst('<media:thumbnail url="', '')
-        // .replaceAll('"/>', '');
-        // imgURL = imgURL.replaceAll('(', '').replaceAll(')', '');
+        
+        //For Default Image
         if (imgURL == '()'){
           imgURL = "http://www.dawn.com/_img/social-default.jpg";
         }
 
-
         date = date.substring(0, 16);
+        
+        
+        // content = content.toString().replaceAll(RegExp(r'''<figure[^>]*>|</figure>|<div[^>]*>|</div>|<span[^>]*>|</span>|<blockquote[^>]*>|
+        //                                                   </blockquote>|<a[^>]*>|</a>|<svg[^>]*>|</svg>|<g[^>]*>|</g>|<iframe[^>]*>|</iframe>|
+        //                                                   <path[^>]*>|</path>|<p[^>]*>|</p>|<script[^>]*>|</script>|<h2[^>]*>|</h2>'''), "");
+        content = content.toString().replaceAll('</p>', "\n");
+        content = content.toString().replaceAll(RegExp(r'''<[^>]*>|</.*>[^]'''), "");
+        content = content.toString().replaceAll('<p>', "");
+        content = content.toString().replaceAll('</p>', "\n\n");
+        content = content.replaceAll(RegExp(r'/\n/g'), '\n\n\n');
+        
         toReturn.add(
           ModelStory(
             title: title, 
