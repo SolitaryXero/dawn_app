@@ -14,7 +14,7 @@ class _ScreenSavedPageState extends State<ScreenSavedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: defaultAppBar,
+      appBar: defaultAppBar("Saved Pages"),
     );
   }
 }

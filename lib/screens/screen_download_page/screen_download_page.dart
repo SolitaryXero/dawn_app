@@ -14,7 +14,10 @@ class _ScreenDownloadPageState extends State<ScreenDownloadPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: defaultAppBar,
+      appBar: defaultAppBar("Downloads"),
+      body: ListView(
+        children: [],
+      )
     );
   }
 }

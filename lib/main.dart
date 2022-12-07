@@ -25,11 +25,9 @@ class _MyAppState extends State<MyApp> {
   
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(  
-      title: 'Flutter Demo',
-      darkTheme: ThemeData.dark(),
-      themeMode: appTheme,
-      home: const ScreenHomePage(),
+return const GetMaterialApp(  
+    title: 'Flutter Demo',
+      home: ScreenHomePage(),
     );
   }
 }

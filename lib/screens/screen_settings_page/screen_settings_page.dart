@@ -16,32 +16,21 @@ class ScreenSettingsPage extends StatefulWidget {
 }
 
 class _ScreenSettingsPageState extends State<ScreenSettingsPage> {
-
-  // bool light = true;
-
   final ValueNotifier<bool> _isDarkModeNotifier = ValueNotifier(true);
 
   @override
-  void initState() {
-    
+  void initState() {  
     super.initState();
-
     // final returnedValue = StringHelper.toMyCustomValue(true);
     final returnedValue = false.toCustomValue();
-    print(returnedValue);
-
-
   }
 
-
-   
   @override
   Widget build(BuildContext context) {
-    print("Build was called");
     final controller = Get.find<ThemeController>();
 
     return Scaffold(
-      appBar: defaultAppBar,
+      appBar: defaultAppBar("Settings"),
       body: ListView(
         children: [
           ListTile(
@@ -50,17 +39,11 @@ class _ScreenSettingsPageState extends State<ScreenSettingsPage> {
               width: 100,
               height: 50,
               child: Obx(() => Switch(
-                    value: controller.isDarkMode.value, 
-                    onChanged: ((bool newValue) {
-                      // _isDarkModeNotifier.value = newValue;
-                      // setState(() {
-                      //   light = value;
-                      // });
-                      controller.changeTheme();
-                      // Get.changeTheme(Get.isDarkMode? ThemeData.light(): ThemeData.dark());
-                  
-                  })))
-              
+                value: controller.isDarkMode.value, 
+                onChanged: ((bool newValue) {
+                  controller.changeTheme();
+                })
+              ))
             ),
           ),
           ListTile(

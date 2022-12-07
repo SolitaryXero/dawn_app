@@ -14,7 +14,7 @@ class _ScreenSearchPageState extends State<ScreenSearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: defaultAppBar,
+      appBar: defaultAppBar("Search"),
       body: const Align(
         alignment: Alignment.topCenter,
         child: ListTile(

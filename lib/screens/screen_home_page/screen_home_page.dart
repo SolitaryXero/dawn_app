@@ -8,6 +8,7 @@ import 'package:dawn_app/globals/globals_stuff.dart';
 import 'package:dawn_app/models/model_story.dart';
 import 'package:dawn_app/screens/screen_Search_page/screen_Search_page.dart';
 import 'package:dawn_app/screens/screen_description_page/screen_description_page.dart';
+import 'package:dawn_app/screens/screen_download_page/screen_download_page.dart';
 import 'package:dawn_app/screens/screen_saved_page/screen_saved_page.dart';
 import 'package:dawn_app/screens/screen_settings_page/screen_settings_page.dart';
 import 'package:dawn_app/screens/test_screen.dart';
@@ -216,7 +217,7 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
           //Downloands
           IconButton(
             onPressed: () async {
-              
+              Navigator.of(context).push(MaterialPageRoute(builder: ((context) => const ScreenDownloadPage())));
             }, 
             icon: const Icon(Icons.download)),
 
