@@ -273,8 +273,7 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
                       ),
                     ),     
                     fit: BoxFit.cover,
-                  ),
-                  
+                  ),                  
                   
                   Container(
                     height: kCardHeight,

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dawn_app/globals/globals_stuff.dart';
 import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -156,32 +158,23 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
               //Download Button
               IconButton(
                 onPressed: () async {
-                  try {
-                    
-                    // Saved with this method.
-                    var imageId = await ImageDownloader.downloadImage(widget.stories[widget.index].imageURL);
-                    if (imageId == null) {
-                      return;
-                    }
-                    ImageDownloader.findPath(imageId);
-                    ImageDownloader.open(imageId);
-                    
-                    savedStories.add(ModelStory(
+                  if (GetStorage().read('SavedStories') != null) {
+                    print(savedStories);
+                    savedStories = getModel(savedArticle);
+                  }
+                  
+                  print(savedStories.length);
+                  savedStories.add(ModelStory(
                       title: widget.stories[widget.index].title,
                       imageURL: widget.stories[widget.index].imageURL,
                       date: widget.stories[widget.index].date,
                       content: widget.stories[widget.index].content,
-                      articleLink: widget.stories[widget.index].articleLink,
-                      imageId: imageId,
-                    ));
-
-                    final toSave = savedStories.map((e) => e.toJson()).toList();
-                    await GetStorage().write('SavedStories', jsonEncode(toSave));
-
-                  } on PlatformException catch (error) {
-                    print(error);
-                  }
-
+                      articleLink: widget.stories[widget.index].articleLink,));
+                  print(savedStories.length);
+                  print(savedStories);
+                  final toSave = savedStories.map((e) => e.toJson()).toList();
+                  await GetStorage().write('SavedStories', jsonEncode(toSave));
+                  
                   // final dataRead = json.decode(GetStorage().read('SavedStories')) ?? [];
                   // List<ModelStory> jsonnner = List<ModelStory>.from(dataRead.map((e) => ModelStory.fromJson(e)).toList());
                   // print("Length is ${jsonnner.length}");
@@ -243,13 +236,20 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.3,
               child: Stack(children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.3,
+                CachedNetworkImage(
                   width: MediaQuery.of(context).size.width,
-                  child: Image.network(
-                    widget.stories[widget.index].imageURL,
-                    fit: BoxFit.cover,
+                  height: kCardHeight,
+                  imageUrl: widget.stories[widget.index].imageURL,
+                  errorWidget: (context, url, error) =>
+                      Image.asset('assets/dawn.jpg'),
+                  imageBuilder: (context, imageProvider) => Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      image: DecorationImage(
+                          image: imageProvider, fit: BoxFit.cover),
+                    ),
                   ),
+                  fit: BoxFit.cover,
                 ),
                 Container(
                   decoration: const BoxDecoration(

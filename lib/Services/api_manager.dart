@@ -16,7 +16,7 @@ class ApiManager implements IApiManager{
   @override
   Future<List<ModelStory>> getNews(String categoriesDawn) async {
     final List<ModelStory> toReturn = [];
-        try {
+    try {
       var response = await Dio().get("$baseURL$categoriesDawn");
       
       final document = XmlDocument.parse(response.toString());
@@ -55,23 +55,16 @@ class ApiManager implements IApiManager{
             date: date, 
             content: content, 
             articleLink: articleLink, 
-            imageId: '',
+            
           )
-        );
-
-        
+        ); 
       }
-  
-    
     } catch (e) {
     
       print(e);
     
     }
-    
-
     return toReturn;
-
   }
 
 }
