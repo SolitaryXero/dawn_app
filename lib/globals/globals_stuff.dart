@@ -16,14 +16,14 @@ bool isSaved = false;
 
 int downloadCount = 0;
 
-var savedArticle = jsonDecode(GetStorage().read('SavedStories')) ?? [];
+String savedArticle = json.decode(GetStorage().read('SavedStories')) ?? [];
 
 class Controller extends GetxController{
   List<ModelStory> savedStories = [];
   
 }
 
-List<ModelStory> getModel (var story){
+List<ModelStory> getModel (dynamic story){
   List<ModelStory> stories = List<ModelStory>.from(story.map((e) => ModelStory.fromJson(e)).toList());  
   return stories;
 }
