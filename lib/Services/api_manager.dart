@@ -54,7 +54,8 @@ class ApiManager implements IApiManager{
             imageURL: imgURL, 
             date: date, 
             content: content, 
-            articleLink: articleLink
+            articleLink: articleLink, 
+            imageId: '',
           )
         );
 

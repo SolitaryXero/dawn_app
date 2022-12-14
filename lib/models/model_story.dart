@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+
 import 'dart:convert';
 
 class ModelStory {
@@ -7,12 +7,14 @@ class ModelStory {
   String date;
   String content;
   String articleLink;
+  String imageId;
   ModelStory({
     required this.title,
     required this.imageURL,
     required this.date,
     required this.content,
     required this.articleLink,
+    required this.imageId,
   });
 
 
@@ -22,6 +24,7 @@ class ModelStory {
     String? date,
     String? content,
     String? articleLink,
+    String? imageId,
   }) {
     return ModelStory(
       title: title ?? this.title,
@@ -29,6 +32,7 @@ class ModelStory {
       date: date ?? this.date,
       content: content ?? this.content,
       articleLink: articleLink ?? this.articleLink,
+      imageId: imageId ?? this.imageId,
     );
   }
 
@@ -39,6 +43,7 @@ class ModelStory {
       'date': date,
       'content': content,
       'articleLink': articleLink,
+      'imageId': imageId,
     };
   }
 
@@ -49,6 +54,7 @@ class ModelStory {
       date: map['date'] as String,
       content: map['content'] as String,
       articleLink: map['articleLink'] as String,
+      imageId: map['imageId'] as String,
     );
   }
 
@@ -58,7 +64,7 @@ class ModelStory {
 
   @override
   String toString() {
-    return 'ModelStory(title: $title, imageURL: $imageURL, date: $date, content: $content, articleLink: $articleLink)';
+    return 'ModelStory(title: $title, imageURL: $imageURL, date: $date, content: $content, articleLink: $articleLink, imageId: $imageId)';
   }
 
   @override
@@ -70,7 +76,8 @@ class ModelStory {
       other.imageURL == imageURL &&
       other.date == date &&
       other.content == content &&
-      other.articleLink == articleLink;
+      other.articleLink == articleLink &&
+      other.imageId == imageId;
   }
 
   @override
@@ -79,7 +86,8 @@ class ModelStory {
       imageURL.hashCode ^
       date.hashCode ^
       content.hashCode ^
-      articleLink.hashCode;
+      articleLink.hashCode ^
+      imageId.hashCode;
   }
 }
 

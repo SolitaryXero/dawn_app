@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:fab_circular_menu/fab_circular_menu.dart';
@@ -7,12 +6,15 @@ import 'package:flutter/services.dart';
 
 import 'package:dawn_app/models/model_story.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:image_downloader/image_downloader.dart';
 import 'package:share_plus/share_plus.dart';
 
-
 class ScreenDescriptionPage extends StatefulWidget {
-   const ScreenDescriptionPage(
-      {super.key, this.index = 0, this.stories = const [],});
+  const ScreenDescriptionPage({
+    super.key,
+    this.index = 0,
+    this.stories = const [],
+  });
   final int index;
   final List<ModelStory> stories;
 
@@ -21,16 +23,14 @@ class ScreenDescriptionPage extends StatefulWidget {
 }
 
 class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
-
   ScrollController scrollController = ScrollController();
   bool showbtn = false;
   double fontSize = 15;
   List<ModelStory> savedStories = [];
-  
+
   @override
   void initState() {
     super.initState();
-    
 
     if (mounted) {
       scrollController.addListener(() {
@@ -50,141 +50,150 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+        const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 
     return Scaffold(
       floatingActionButton: Stack(children: [
-        
         //Menu
         FabCircularMenu(
-          animationDuration: const Duration(milliseconds: 200),
-          fabSize: 40,
-          fabMargin: const EdgeInsets.all(20),
-          fabOpenIcon: const Icon(
-            Icons.menu,
-            color: Colors.white,
-          ),
-          fabCloseIcon: const Icon(
-            Icons.close,
-            color: Colors.white,
-          ),
-          ringWidth: 40,
-          ringDiameter: 270,
-          ringColor: Colors.blue,
-          children: [
-
-            //Font Size Incrementor Button
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  fontSize--;
-                });
-              },
-              icon: const Icon(
-                Icons.remove_circle_outline,
-                color: Colors.white,
-              ),
+            animationDuration: const Duration(milliseconds: 200),
+            fabSize: 40,
+            fabMargin: const EdgeInsets.all(20),
+            fabOpenIcon: const Icon(
+              Icons.menu,
+              color: Colors.white,
             ),
-
-            //Font Size Decrementor Button
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  fontSize++;
-                });
-              },
-              icon: const Icon(
-                Icons.add_circle_outline,
-                color: Colors.white,
-              ),
+            fabCloseIcon: const Icon(
+              Icons.close,
+              color: Colors.white,
             ),
-
-            //Share button
-            IconButton(
-              onPressed: () {
-                Share.share(widget.stories[widget.index].articleLink,);
-              },
-              icon: const Icon(
-                Icons.share,
-                color: Colors.white,
+            ringWidth: 40,
+            ringDiameter: 270,
+            ringColor: Colors.blue,
+            children: [
+              //Font Size Incrementor Button
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    fontSize--;
+                  });
+                },
+                icon: const Icon(
+                  Icons.remove_circle_outline,
+                  color: Colors.white,
+                ),
               ),
-            ),
 
-            //Copy Button
-            IconButton(
-              onPressed: () {
-                showDialog(
-                  context: context, 
-                  builder: (
-                    (context) => AlertDialog(
-                      contentPadding: const EdgeInsets.only(right: 10,left: 10,top: 20,bottom: 0),
-                      actions: [
-                        TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("Cancel")),
-
-                        TextButton(
-                          child: const Text("Copy All"), 
-                          onPressed: () {
-                            Clipboard.setData(
-                              ClipboardData(text: widget.stories[widget.index].content, ))
-                              .then((_){ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Article Content copied to clipboard")));
-                            });
-                          
-                            Navigator.pop(context);
-                          }
-                        ),
-                        
-                      ],
-                      
-                      content: SizedBox(
-                        height: MediaQuery.of(context).size.height *0.9, 
-                        width: MediaQuery.of(context).size.width *0.9, 
-                        child: SelectableText(
-                          widget.stories[widget.index].content,
-                          scrollPhysics: const BouncingScrollPhysics(),
-                        )
-                      )
-                    )
-                  )
-                );
-              },
-              icon: const Icon(
-                Icons.copy,
-                color: Colors.white,
+              //Font Size Decrementor Button
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    fontSize++;
+                  });
+                },
+                icon: const Icon(
+                  Icons.add_circle_outline,
+                  color: Colors.white,
+                ),
               ),
-            ),
 
-            //Download Button
-            IconButton(
-              onPressed: () async{
-                
-                savedStories.add(ModelStory(
-                  title: widget.stories[widget.index].title,
-                  imageURL: widget.stories[widget.index].imageURL,
-                  date: widget.stories[widget.index].date,
-                  content: widget.stories[widget.index].content,
-                  articleLink: widget.stories[widget.index].articleLink,
-                ));
-                // var list = savedStories.cast();
-                // list = json.encode(list);
-                // var list2 = json.decode(list);
-                // list2 = list2;
-                // print(savedStories.runtimeType);
-                final toSave = savedStories.map((e) => e.toJson()).toList();
-                await GetStorage().write('story', jsonEncode(toSave));
-                final dataRead = json.decode(GetStorage().read('story')) ?? [];
-                List<ModelStory> jsonnner = List<ModelStory>.from(dataRead.map((e) => ModelStory.fromJson(e)).toList());
-                print("Length is ${jsonnner.length}");
-                print("First title is ${jsonnner[0].title}");
-                // print(jsonDecode(GetStorage().read('story')));
-                
-                
-              },
-              icon: const Icon(
-                Icons.download,
-                color: Colors.white,
+              //Share button
+              IconButton(
+                onPressed: () {
+                  Share.share(
+                    widget.stories[widget.index].articleLink,
+                  );
+                },
+                icon: const Icon(
+                  Icons.share,
+                  color: Colors.white,
+                ),
               ),
-            ),
-          ]),
+
+              //Copy Button
+              IconButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: ((context) => AlertDialog(
+                          contentPadding: const EdgeInsets.only(
+                              right: 10, left: 10, top: 20, bottom: 0),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("Cancel")),
+                            TextButton(
+                                child: const Text("Copy All"),
+                                onPressed: () {
+                                  Clipboard.setData(ClipboardData(
+                                    text: widget.stories[widget.index].content,
+                                  )).then((_) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                "Article Content copied to clipboard")));
+                                  });
+
+                                  Navigator.pop(context);
+                                }),
+                          ],
+                          content: SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.9,
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              child: SelectableText(
+                                widget.stories[widget.index].content,
+                                scrollPhysics: const BouncingScrollPhysics(),
+                              )))));
+                },
+                icon: const Icon(
+                  Icons.copy,
+                  color: Colors.white,
+                ),
+              ),
+
+              //Download Button
+              IconButton(
+                onPressed: () async {
+                  try {
+                    
+                    // Saved with this method.
+                    var imageId = await ImageDownloader.downloadImage(widget.stories[widget.index].imageURL);
+                    if (imageId == null) {
+                      return;
+                    }
+                    ImageDownloader.findPath(imageId);
+                    ImageDownloader.open(imageId);
+                    
+                    savedStories.add(ModelStory(
+                      title: widget.stories[widget.index].title,
+                      imageURL: widget.stories[widget.index].imageURL,
+                      date: widget.stories[widget.index].date,
+                      content: widget.stories[widget.index].content,
+                      articleLink: widget.stories[widget.index].articleLink,
+                      imageId: imageId,
+                    ));
+
+                    final toSave = savedStories.map((e) => e.toJson()).toList();
+                    await GetStorage().write('SavedStories', jsonEncode(toSave));
+
+                  } on PlatformException catch (error) {
+                    print(error);
+                  }
+
+                  // final dataRead = json.decode(GetStorage().read('SavedStories')) ?? [];
+                  // List<ModelStory> jsonnner = List<ModelStory>.from(dataRead.map((e) => ModelStory.fromJson(e)).toList());
+                  // print("Length is ${jsonnner.length}");
+                  // print("First title is ${jsonnner[0].title}");
+                  // print(jsonDecode(GetStorage().read('story')));
+                },
+                icon: const Icon(
+                  Icons.download,
+                  color: Colors.white,
+                ),
+              ),
+            ]),
 
         //back arrow button
         Positioned(
@@ -243,8 +252,7 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
                   ),
                 ),
                 Container(
-                  decoration: const BoxDecoration
-                  (
+                  decoration: const BoxDecoration(
                       gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -288,10 +296,10 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
               child: Text(
                 widget.stories[widget.index].content,
                 style: TextStyle(
-                wordSpacing: 2,
-                letterSpacing: 1.5,
-                height: 1.3,
-                fontSize: fontSize),
+                    wordSpacing: 2,
+                    letterSpacing: 1.5,
+                    height: 1.3,
+                    fontSize: fontSize),
               ),
             )
           ],
@@ -299,15 +307,4 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
       ),
     );
   }
-  void initVariables() {
-    List<ModelStory> savedStories = [
-      ModelStory(
-          title: widget.stories[widget.index].title,
-          imageURL: widget.stories[widget.index].imageURL,
-          date: widget.stories[widget.index].imageURL,
-          content: widget.stories[widget.index].imageURL,
-          articleLink: widget.stories[widget.index].imageURL,)
-    ];
-  }
 }
-

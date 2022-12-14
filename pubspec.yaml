@@ -47,6 +47,7 @@ dependencies:
   share_plus: ^6.3.0
   hive: ^2.2.3
   get_storage: ^2.0.3
+  image_downloader: ^0.31.0
 
 
 
