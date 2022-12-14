@@ -1,15 +1,18 @@
-import 'package:cached_network_image/cached_network_image.dart';
+
+import 'dart:convert';
+
 import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:dawn_app/models/model_story.dart';
-import 'package:hive/hive.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:share_plus/share_plus.dart';
 
+
 class ScreenDescriptionPage extends StatefulWidget {
-  const ScreenDescriptionPage(
-      {super.key, required this.index, required this.stories});
+   const ScreenDescriptionPage(
+      {super.key, this.index = 0, this.stories = const [],});
   final int index;
   final List<ModelStory> stories;
 
@@ -18,14 +21,16 @@ class ScreenDescriptionPage extends StatefulWidget {
 }
 
 class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
+
   ScrollController scrollController = ScrollController();
   bool showbtn = false;
   double fontSize = 15;
-  var box = Hive.box("Downloads");
-
+  List<ModelStory> savedStories = [];
+  
   @override
   void initState() {
     super.initState();
+    
 
     if (mounted) {
       scrollController.addListener(() {
@@ -45,12 +50,12 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+      const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 
     return Scaffold(
       floatingActionButton: Stack(children: [
+        
         //Menu
-
         FabCircularMenu(
           animationDuration: const Duration(milliseconds: 200),
           fabSize: 40,
@@ -97,7 +102,7 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
             //Share button
             IconButton(
               onPressed: () {
-                Share.share(widget.stories[widget.index].articleLink);
+                Share.share(widget.stories[widget.index].articleLink,);
               },
               icon: const Icon(
                 Icons.share,
@@ -115,22 +120,25 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
                       contentPadding: const EdgeInsets.only(right: 10,left: 10,top: 20,bottom: 0),
                       actions: [
                         TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("Cancel")),
+
                         TextButton(
                           child: const Text("Copy All"), 
                           onPressed: () {
                             Clipboard.setData(
-                              ClipboardData(text: widget.stories[widget.index].content,))
+                              ClipboardData(text: widget.stories[widget.index].content, ))
                               .then((_){ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Article Content copied to clipboard")));
                             });
+                          
                             Navigator.pop(context);
                           }
                         ),
                         
                       ],
+                      
                       content: SizedBox(
                         height: MediaQuery.of(context).size.height *0.9, 
                         width: MediaQuery.of(context).size.width *0.9, 
-                        child:SelectableText(
+                        child: SelectableText(
                           widget.stories[widget.index].content,
                           scrollPhysics: const BouncingScrollPhysics(),
                         )
@@ -147,7 +155,29 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
 
             //Download Button
             IconButton(
-              onPressed: () {
+              onPressed: () async{
+                
+                savedStories.add(ModelStory(
+                  title: widget.stories[widget.index].title,
+                  imageURL: widget.stories[widget.index].imageURL,
+                  date: widget.stories[widget.index].date,
+                  content: widget.stories[widget.index].content,
+                  articleLink: widget.stories[widget.index].articleLink,
+                ));
+                // var list = savedStories.cast();
+                // list = json.encode(list);
+                // var list2 = json.decode(list);
+                // list2 = list2;
+                // print(savedStories.runtimeType);
+                final toSave = savedStories.map((e) => e.toJson()).toList();
+                await GetStorage().write('story', jsonEncode(toSave));
+                final dataRead = json.decode(GetStorage().read('story')) ?? [];
+                List<ModelStory> jsonnner = List<ModelStory>.from(dataRead.map((e) => ModelStory.fromJson(e)).toList());
+                print("Length is ${jsonnner.length}");
+                print("First title is ${jsonnner[0].title}");
+                // print(jsonDecode(GetStorage().read('story')));
+                
+                
               },
               icon: const Icon(
                 Icons.download,
@@ -204,22 +234,17 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.3,
               child: Stack(children: [
-                CachedNetworkImage(
-                  width: MediaQuery.of(context).size.width,
+                SizedBox(
                   height: MediaQuery.of(context).size.height * 0.3,
-                  imageUrl: widget.stories[widget.index].imageURL,
-                  errorWidget: (context, url, error) =>
-                      Image.asset('assets/dawn.jpg'),
-                  imageBuilder: (context, imageProvider) => Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: imageProvider, fit: BoxFit.cover),
-                    ),
+                  width: MediaQuery.of(context).size.width,
+                  child: Image.network(
+                    widget.stories[widget.index].imageURL,
+                    fit: BoxFit.cover,
                   ),
-                  fit: BoxFit.contain,
                 ),
                 Container(
-                  decoration: const BoxDecoration(
+                  decoration: const BoxDecoration
+                  (
                       gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -263,10 +288,10 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
               child: Text(
                 widget.stories[widget.index].content,
                 style: TextStyle(
-                    wordSpacing: 2,
-                    letterSpacing: 1.5,
-                    height: 1.3,
-                    fontSize: fontSize),
+                wordSpacing: 2,
+                letterSpacing: 1.5,
+                height: 1.3,
+                fontSize: fontSize),
               ),
             )
           ],
@@ -274,4 +299,15 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
       ),
     );
   }
+  void initVariables() {
+    List<ModelStory> savedStories = [
+      ModelStory(
+          title: widget.stories[widget.index].title,
+          imageURL: widget.stories[widget.index].imageURL,
+          date: widget.stories[widget.index].imageURL,
+          content: widget.stories[widget.index].imageURL,
+          articleLink: widget.stories[widget.index].imageURL,)
+    ];
+  }
 }
+

@@ -46,6 +46,7 @@ dependencies:
   cached_network_image: ^3.2.3
   share_plus: ^6.3.0
   hive: ^2.2.3
+  get_storage: ^2.0.3
 
 
 
@@ -73,6 +74,7 @@ flutter:
 
   assets:
     - assets/circle.png
+    - assets/dawn.jpg
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

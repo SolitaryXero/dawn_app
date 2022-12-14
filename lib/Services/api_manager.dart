@@ -42,9 +42,6 @@ class ApiManager implements IApiManager{
         date = date.substring(0, 16);
         
         
-        // content = content.toString().replaceAll(RegExp(r'''<figure[^>]*>|</figure>|<div[^>]*>|</div>|<span[^>]*>|</span>|<blockquote[^>]*>|
-        //                                                   </blockquote>|<a[^>]*>|</a>|<svg[^>]*>|</svg>|<g[^>]*>|</g>|<iframe[^>]*>|</iframe>|
-        //                                                   <path[^>]*>|</path>|<p[^>]*>|</p>|<script[^>]*>|</script>|<h2[^>]*>|</h2>'''), "");
         content = content.toString().replaceAll('</p>', "\n");
         content = content.toString().replaceAll(RegExp(r'''<[^>]*>|</.*>[^]'''), "");
         content = content.toString().replaceAll('<p>', "");
@@ -63,14 +60,7 @@ class ApiManager implements IApiManager{
 
         
       }
-      
-      // print(document.toString());
-      // print(title);
-      // print(content);
-      // print(date);
-      // print(imgURL);
-      // print(articleLink);
-      
+  
     
     } catch (e) {
     

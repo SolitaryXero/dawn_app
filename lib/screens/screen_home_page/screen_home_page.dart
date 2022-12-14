@@ -27,6 +27,7 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
 
   List<ModelStory> stories = [];
   int categoryIndex = 0;
+  
 
   @override
   void initState() {
