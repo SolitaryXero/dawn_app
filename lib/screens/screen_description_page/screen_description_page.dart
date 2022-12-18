@@ -1,15 +1,14 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dawn_app/globals/globals_stuff.dart';
 import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:dawn_app/models/model_story.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:image_downloader/image_downloader.dart';
 import 'package:share_plus/share_plus.dart';
+
+import 'package:dawn_app/globals/globals_stuff.dart';
+import 'package:dawn_app/models/model_story.dart';
 
 class ScreenDescriptionPage extends StatefulWidget {
   const ScreenDescriptionPage({
@@ -29,6 +28,7 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
   bool showbtn = false;
   double fontSize = 15;
   List<ModelStory> savedStories = [];
+  
 
   @override
   void initState() {
@@ -73,6 +73,7 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
             ringDiameter: 270,
             ringColor: Colors.blue,
             children: [
+
               //Font Size Incrementor Button
               IconButton(
                 onPressed: () {
@@ -158,28 +159,20 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
               //Download Button
               IconButton(
                 onPressed: () async {
-                  if (GetStorage().read('SavedStories') != null) {
-                    print(savedStories);
-                    savedStories = getModel(savedArticle);
-                  }
-                  
-                  print(savedStories.length);
+                
+                  savedStories = getModel();
+                
                   savedStories.add(ModelStory(
                       title: widget.stories[widget.index].title,
                       imageURL: widget.stories[widget.index].imageURL,
                       date: widget.stories[widget.index].date,
                       content: widget.stories[widget.index].content,
-                      articleLink: widget.stories[widget.index].articleLink,));
-                  print(savedStories.length);
-                  print(savedStories);
+                      articleLink: widget.stories[widget.index].articleLink,
+                  ));
+
                   final toSave = savedStories.map((e) => e.toJson()).toList();
                   await GetStorage().write('SavedStories', jsonEncode(toSave));
                   
-                  // final dataRead = json.decode(GetStorage().read('SavedStories')) ?? [];
-                  // List<ModelStory> jsonnner = List<ModelStory>.from(dataRead.map((e) => ModelStory.fromJson(e)).toList());
-                  // print("Length is ${jsonnner.length}");
-                  // print("First title is ${jsonnner[0].title}");
-                  // print(jsonDecode(GetStorage().read('story')));
                 },
                 icon: const Icon(
                   Icons.download,
@@ -238,7 +231,7 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
               child: Stack(children: [
                 CachedNetworkImage(
                   width: MediaQuery.of(context).size.width,
-                  height: kCardHeight,
+                  height: MediaQuery.of(context).size.height * 0.3,
                   imageUrl: widget.stories[widget.index].imageURL,
                   errorWidget: (context, url, error) =>
                       Image.asset('assets/dawn.jpg'),
@@ -307,4 +300,7 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
       ),
     );
   }
+  
+
+
 }
