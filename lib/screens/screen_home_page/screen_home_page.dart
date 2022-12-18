@@ -11,7 +11,6 @@ import 'package:dawn_app/screens/screen_description_page/screen_description_page
 import 'package:dawn_app/screens/screen_download_page/screen_download_page.dart';
 import 'package:dawn_app/screens/screen_saved_page/screen_saved_page.dart';
 import 'package:dawn_app/screens/screen_settings_page/screen_settings_page.dart';
-import 'package:dawn_app/screens/test_screen.dart';
 import 'package:dawn_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -56,7 +55,7 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
 
   @override
   Widget build(BuildContext context) {
-   
+
     return Scaffold(
       drawer: Padding(
         padding: const EdgeInsets.only(top: 80, bottom: 50),
@@ -208,7 +207,7 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
         title: const Text("Dawn"),
         actions: [
           
-          //Saved Pages
+          //Dictionary Pages
           IconButton(
             onPressed: (){
               Navigator.push(context, MaterialPageRoute(builder:(context) => const ScreenSavedPage() ,));
@@ -254,12 +253,8 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
               itemBuilder: ((context, index) => GestureDetector(
                 onTap: () => Navigator.push(
                   context, 
-                  MaterialPageRoute(
-                    builder: (context) => ScreenDescriptionPage(index: index, stories: stories,),
-                    settings: RouteSettings(
-                      arguments: stories[index].imageURL
-                    )
-                )),
+                  _createRoute(index, stories),
+                  ),
                 child: Stack(children: [
                   CachedNetworkImage(
                     width: MediaQuery.of(context).size.width ,
@@ -319,5 +314,24 @@ class _ScreenHomePageState extends State<ScreenHomePage> {
     );
   }
 
+  Route _createRoute(index,stories) {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => ScreenDescriptionPage(index: index,stories: stories,),
+    settings: RouteSettings(arguments: stories[index].imageURL),
+    transitionDuration: const Duration(milliseconds: 300),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0.0, 1.0);
+      const end = Offset(0.0, 0.0);
+      const curve = Curves.decelerate;
+      
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
+}
 
 }
