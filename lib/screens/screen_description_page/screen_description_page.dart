@@ -28,7 +28,6 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
   bool showbtn = false;
   double fontSize = 15;
   List<ModelStory> savedStories = [];
-  
 
   @override
   void initState() {
@@ -73,7 +72,6 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
             ringDiameter: 270,
             ringColor: Colors.blue,
             children: [
-
               //Font Size Incrementor Button
               IconButton(
                 onPressed: () {
@@ -159,20 +157,24 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
               //Download Button
               IconButton(
                 onPressed: () async {
-                
                   savedStories = getModel();
-                
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: const Text('Article saved.', 
+                    textAlign: TextAlign.center),
+                    duration: const Duration(seconds: 1),
+                    backgroundColor: Colors.lightBlue.shade500,
+                    padding: const EdgeInsets.all(10),
+                  ));
                   savedStories.add(ModelStory(
-                      title: widget.stories[widget.index].title,
-                      imageURL: widget.stories[widget.index].imageURL,
-                      date: widget.stories[widget.index].date,
-                      content: widget.stories[widget.index].content,
-                      articleLink: widget.stories[widget.index].articleLink,
+                    title: widget.stories[widget.index].title,
+                    imageURL: widget.stories[widget.index].imageURL,
+                    date: widget.stories[widget.index].date,
+                    content: widget.stories[widget.index].content,
+                    articleLink: widget.stories[widget.index].articleLink,
                   ));
 
                   final toSave = savedStories.map((e) => e.toJson()).toList();
                   await GetStorage().write('SavedStories', jsonEncode(toSave));
-                  
                 },
                 icon: const Icon(
                   Icons.download,
@@ -226,6 +228,7 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
         controller: scrollController,
         child: Column(
           children: [
+            //Image
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.3,
               child: Stack(children: [
@@ -269,21 +272,24 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
               ]),
             ),
             const SizedBox(
-              height: 50,
+              height: 30,
             ),
+            //title
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.9,
               child: Text(
                 widget.stories[widget.index].title,
                 style: const TextStyle(
-                    color: Colors.black,
+                    
                     fontWeight: FontWeight.bold,
                     fontSize: 20),
               ),
             ),
             const SizedBox(
-              height: 10,
+              height: 30,
             ),
+
+            //content
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.9,
               child: Text(
@@ -300,7 +306,4 @@ class _ScreenDescriptionPageState extends State<ScreenDescriptionPage> {
       ),
     );
   }
-  
-
-
 }

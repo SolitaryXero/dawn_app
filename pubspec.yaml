@@ -50,6 +50,11 @@ dependencies:
   image_downloader: ^0.31.0
   sqflite: ^2.2.2
   webview_flutter: ^4.0.0
+  flutter_native_splash: ^2.2.16
+  animated_splash_screen: ^1.3.0
+  page_transition: ^2.0.9
+  animated_text_kit: ^4.2.2
+  flutter_launcher_icons: ^0.11.0
 
 
 
@@ -63,10 +68,28 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/icon.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "path/to/image.png"
+    background_color: "#hexcode"
+    theme_color: "#hexcode"
+  windows:
+    generate: true
+    image_path: "path/to/image.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "path/to/image.png"
+    
 # The following section is specific to Flutter packages.
 flutter:
 
@@ -95,9 +118,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
+  fonts:
+     - family: CloisterBlack
+       fonts:
+          - asset: assets/CloisterBlack.ttf
   #       - asset: fonts/Schyler-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic

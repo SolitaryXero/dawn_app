@@ -14,9 +14,9 @@ TextStyle defaultTextTheme = const TextStyle(fontWeight: FontWeight.bold, color:
 
 bool isSaved = false;
 
-int downloadCount = 0;
+Color defaultThemeColor = Colors.black;
 
-// dynamic savedArticle = json.decode(GetStorage().read('SavedStories') ??  "[]" ) ?? [];
+int downloadCount = 0;
 
 class Controller extends GetxController{
   List<ModelStory> savedStories = [];
@@ -33,6 +33,6 @@ List<ModelStory> getModel (){
 AppBar defaultAppBar(String title){
   return AppBar(
     title: Text(title),
-    backgroundColor: const Color(0xff040826),  
+    backgroundColor: defaultThemeColor,  
   );
 }

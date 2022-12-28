@@ -41,7 +41,10 @@ class ApiManager implements IApiManager{
 
         date = date.substring(0, 16);
         
-        
+        content = content.toString().replaceAll('''{try{this.style.height=this.contentWindow.document.body.scrollHeight+'px';}catch{}}, 100)"''', "");
+        content = content.toString().replaceAll('width="100%" frameborder="0" scrolling="no"', "");
+        content = content.toString().replaceAll('style="height:400px;position:relative"', "");
+        content = content.toString().replaceAll('sandbox="allow-same-origin allow-scripts allow-popups allow-modals allow-forms">', "");
         content = content.toString().replaceAll('</p>', "\n");
         content = content.toString().replaceAll(RegExp(r'''<[^>]*>|</.*>[^]'''), "");
         content = content.toString().replaceAll('<p>', "");

@@ -20,7 +20,25 @@ class _ScreenDownloadPageState extends State<ScreenDownloadPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: defaultAppBar("Downloads"),
+      
+      appBar: AppBar(
+        leading: const BackButton(),
+        title: const Text("Downloads"),
+        actions: [
+          IconButton(
+              onPressed: () async {
+                  stories.clear();
+                  setState(() {});
+
+                final toSave = stories.map((e) => e.toJson()).toList();
+                await GetStorage().write('SavedStories', jsonEncode(toSave));
+              },
+              tooltip: 'Delete All',
+              icon: const Icon(Icons.delete_outline))
+        ],
+        backgroundColor: defaultThemeColor,
+      ),
+
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -61,8 +79,6 @@ class _ScreenDownloadPageState extends State<ScreenDownloadPage> {
                         fit: BoxFit.cover,
                       ),
 
-                      
-
                       //Card Gradient
                       Container(
                         height: kCardHeight,
@@ -101,24 +117,24 @@ class _ScreenDownloadPageState extends State<ScreenDownloadPage> {
                           style: const TextStyle(color: Colors.white),
                         ),
                       ),
-                      
+
                       //Delete Button
                       Align(
                         alignment: Alignment.topRight,
                         child: IconButton(
-                          onPressed: () async{
-                            try{
+                          onPressed: () async {
+                            try {
                               stories.remove(stories[index]);
-                              setState(() {
-                                
-                              });
+                              setState(() {});
                             } on RangeError {
                               print("Range Error has occured on line 109");
                             }
-                            
-                            final toSave = stories.map((e) => e.toJson()).toList();
-                            await GetStorage().write('SavedStories', jsonEncode(toSave));
-                          }, 
+
+                            final toSave =
+                                stories.map((e) => e.toJson()).toList();
+                            await GetStorage()
+                                .write('SavedStories', jsonEncode(toSave));
+                          },
                           icon: const Icon(Icons.delete_outline),
                           color: Colors.white,
                         ),
